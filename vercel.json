@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/import-211",
+      "schedule": "0 6 * * 1"
+    },
+    {
+      "path": "/api/admin/translate",
+      "schedule": "0 7 * * *"
+    }
+  ]
+}

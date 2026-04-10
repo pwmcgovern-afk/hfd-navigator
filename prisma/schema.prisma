@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Resource {
+  id          String   @id @default(uuid())
+  name        String
+  organization String?
+  description String
+
+  categories  String[]
+
+  // Location
+  address     String?
+  city        String   @default("Hartford")
+  state       String   @default("CT")
+  zip         String?
+  latitude    Float?
+  longitude   Float?
+
+  // Contact
+  phone       String?
+  website     String?
+  email       String?
+  hours       String?
+
+  // Healthcare-specific fields
+  languages         String[]  @default([])
+  insuranceAccepted String[]  @default([])
+  cost              String?
+  acceptingClients  Boolean   @default(true)
+  waitTime          String?
+  referralRequired  Boolean   @default(false)
+
+  // Eligibility criteria (JSON for flexibility)
+  eligibility Json?
+
+  // Application info
+  howToApply  String?
+
+  // Organization-specific tips
+  tips        String[]
+
+  // Spanish translations
+  nameEs        String?
+  descriptionEs String?
+  howToApplyEs  String?
+  tipsEs        String[]
+
+  // Data source tracking
+  source             String   @default("manual")
+  sourceId           String?
+  verificationMethod String?  // "staff_call", "web_check", "org_confirmed", "211_import", "user_reported"
+
+  // Note: search_vector tsvector column exists in the DB and is maintained by
+  // a trigger, but it's omitted from the Prisma schema because Unsupported types
+  // were causing findUnique/findFirst to fail silently. Search uses raw SQL.
+
+  // Timestamps
+  verifiedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categories])
+  @@index([city])
+  @@index([source])
+}
+
+model Category {
+  id           String @id @default(uuid())
+  name         String
+  slug         String @unique
+  description  String?
+  icon         String?
+  displayOrder Int    @default(0)
+}
+
+model Feedback {
+  id         String   @id @default(uuid())
+  resourceId String
+  helpful    Boolean
+  createdAt  DateTime @default(now())
+
+  @@index([resourceId])
+}
+
+model AnonymousUser {
+  id        String         @id @default(uuid())
+  token     String         @unique
+  createdAt DateTime       @default(now())
+  entries   TrackerEntry[]
+}
+
+model TrackerEntry {
+  id               String   @id @default(uuid())
+  userId           String
+  resourceId       String
+  resourceName     String
+  resourceNameEs   String?
+  organizationName String?
+  status           String   @default("reached_out")
+  outcome          String   @default("")  // "connected", "waitlisted", "denied", "no_response"
+  contactPerson    String   @default("")
+  dateContacted    String   @default("")
+  notes            String   @default("")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
+
+  user AnonymousUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([resourceId])
+}
+
+model Suggestion {
+  id             String    @id @default(uuid())
+  resourceId     String?   // null for new resource suggestions
+  type           String    @default("update")  // "update" or "new"
+  submitterName  String?
+  submitterEmail String?
+  submitterOrg   String?
+  changes        Json      // proposed changes or full new resource data
+  status         String    @default("pending")  // "pending", "approved", "rejected"
+  adminNotes     String?
+  createdAt      DateTime  @default(now())
+  reviewedAt     DateTime?
+
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+}
+
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         String    @default("editor")  // "admin", "editor", "viewer"
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+}
+
+model ChangeLog {
+  id           String   @id @default(uuid())
+  resourceId   String
+  resourceName String
+  action       String
+  changes      Json?
+  createdAt    DateTime @default(now())
+
+  @@index([resourceId])
+  @@index([createdAt(sort: Desc)])
+}
+
+model PageView {
+  id         String   @id @default(uuid())
+  path       String
+  resourceId String?
+  category   String?
+  createdAt  DateTime @default(now())
+
+  @@index([path])
+  @@index([resourceId])
+  @@index([createdAt(sort: Desc)])
+}
