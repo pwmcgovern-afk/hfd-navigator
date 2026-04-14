@@ -111,6 +111,7 @@ export default function ResourcesClient({ resources, query, category, insurance,
           ? getDistanceMiles(userLocation.lat, userLocation.lng, r.latitude, r.longitude)
           : 999,
       }))
+      .filter(r => (r.distance ?? 999) <= 5)
       .sort((a, b) => (a.distance ?? 999) - (b.distance ?? 999))
   }
 

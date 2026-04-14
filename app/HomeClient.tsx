@@ -131,6 +131,13 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
             </Link>
           </div>
 
+          {/* Quick Links */}
+          <div className="flex gap-3 mb-6">
+            <Link href="/tracker" className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
+              My Tracker
+            </Link>
+          </div>
+
           {/* 211 CTA */}
           <section className="rounded-2xl p-6 mb-6 text-center" style={{ background: '#F0FAF0', border: '1px solid #C8E6C9' }}>
             <a href="tel:211" className="text-lg font-bold" style={{ color: '#2E7D32' }}>
