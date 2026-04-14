@@ -7,7 +7,7 @@ import assert from 'node:assert/strict'
 import { calculateEligibilityScore, filterAndRankResources, type UserProfile, type ResourceWithEligibility } from '../lib/eligibility'
 
 const baseUser: UserProfile = {
-  zipCode: '06511',
+  zipCode: '06103',
   householdSize: 2,
   monthlyIncome: 1500,
   housingStatus: 'housed',

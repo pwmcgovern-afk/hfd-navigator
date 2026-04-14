@@ -16,7 +16,7 @@ export default function LocationStep({ data, setData, language }: StepProps) {
         inputMode="numeric"
         pattern="[0-9]*"
         maxLength={5}
-        placeholder="06511"
+        placeholder="06103"
         value={data.zipCode}
         onChange={(e) => setData({ ...data, zipCode: e.target.value.replace(/\D/g, '') })}
         className="input text-3xl text-center font-semibold tracking-widest"

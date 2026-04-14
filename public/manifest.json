@@ -1,6 +1,6 @@
 {
   "name": "Hartford Navigator",
-  "short_name": "NH Navigator",
+  "short_name": "HFD Navigator",
   "description": "Find social services, benefits, and resources in Hartford, CT",
   "start_url": "/",
   "display": "standalone",
