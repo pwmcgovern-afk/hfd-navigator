@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 const content = {
   en: {
     heroTitle: 'Find free help in Hartford',
-    heroSub: 'Food, housing, healthcare, legal aid — 192 resources in English and Spanish, all in one place.',
+    heroSub: 'Food, housing, healthcare, legal aid — 59 resources in English and Spanish, all in one place.',
     heroCta: 'Find Resources for Me',
     heroSecondary: 'Browse All Resources',
     browseTitle: 'Browse by Category',
@@ -21,7 +21,7 @@ const content = {
   },
   es: {
     heroTitle: 'Encuentre ayuda gratuita en Hartford',
-    heroSub: 'Comida, vivienda, salud, ayuda legal — 192 recursos en ingles y espanol, todo en un solo lugar.',
+    heroSub: 'Comida, vivienda, salud, ayuda legal — 59 recursos en ingles y espanol, todo en un solo lugar.',
     heroCta: 'Buscar Recursos',
     heroSecondary: 'Ver Todos los Recursos',
     browseTitle: 'Buscar por Categoria',
