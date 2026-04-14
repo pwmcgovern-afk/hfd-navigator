@@ -1,6 +1,6 @@
 import type { StepProps } from '../wizard-types'
 import { wizardContent } from '../wizard-content'
-import { NEW_HAVEN_ZIPS } from '@/lib/constants'
+import { HARTFORD_ZIPS } from '@/lib/constants'
 
 export default function LocationStep({ data, setData, language }: StepProps) {
   const t = wizardContent[language]
@@ -20,9 +20,9 @@ export default function LocationStep({ data, setData, language }: StepProps) {
         value={data.zipCode}
         onChange={(e) => setData({ ...data, zipCode: e.target.value.replace(/\D/g, '') })}
         className="input text-3xl text-center font-semibold tracking-widest"
-        aria-describedby={data.zipCode.length === 5 && !NEW_HAVEN_ZIPS.includes(data.zipCode) ? 'zip-warning' : undefined}
+        aria-describedby={data.zipCode.length === 5 && !HARTFORD_ZIPS.includes(data.zipCode) ? 'zip-warning' : undefined}
       />
-      {data.zipCode.length === 5 && !NEW_HAVEN_ZIPS.includes(data.zipCode) && (
+      {data.zipCode.length === 5 && !HARTFORD_ZIPS.includes(data.zipCode) && (
         <div id="zip-warning" className="info-card warning mt-4" role="alert">
           <p className="text-sm">{t.locationWarning}</p>
         </div>
