@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/db'
+import * as Sentry from '@sentry/nextjs'
 
-// Per-IP rate limiter mirroring the chat route. Resets on cold start.
+// Per-IP rate limiter mirroring the chat route. Resets on cold start, so it
+// won't stop a determined attacker but will quiet casual abuse.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT = 30
 const RATE_WINDOW_MS = 60 * 60 * 1000
@@ -81,6 +83,7 @@ export async function POST(req: Request) {
     // a Resend outage can't surface as an unhandled promise rejection)
     if (!helpful) {
       sendNegativeFeedbackAlert(resourceId).catch(err => {
+        Sentry.captureException(err, { tags: { route: 'api/feedback', op: 'alert' } })
         console.error('Negative feedback alert failed:', err)
       })
     }
@@ -90,6 +93,7 @@ export async function POST(req: Request) {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   } catch (error) {
+    Sentry.captureException(error, { tags: { route: 'api/feedback' } })
     console.error('Feedback API error:', error)
     return new Response(
       JSON.stringify({ error: 'Failed to save feedback' }),

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import * as Sentry from '@sentry/nextjs'
 
 // GET /api/tracker?token=xxx — fetch all entries for a user
 export async function GET(req: Request) {
@@ -21,6 +22,7 @@ export async function GET(req: Request) {
 
     return Response.json({ entries: user.entries })
   } catch (error) {
+    Sentry.captureException(error, { tags: { route: 'api/tracker', method: 'GET' } })
     console.error('Tracker GET error:', error)
     return Response.json({ error: 'Failed to fetch entries' }, { status: 500 })
   }
@@ -30,7 +32,9 @@ export async function GET(req: Request) {
 //
 // All writes for a single sync run inside one transaction so two concurrent
 // requests from the same user can't both miss the findFirst and create
-// duplicate (userId, resourceId) rows.
+// duplicate (userId, resourceId) rows. The schema has no unique constraint
+// on that pair yet — when we add one we can switch to prisma.upsert and drop
+// the transaction wrapper.
 export async function POST(req: Request) {
   try {
     const body = await req.json()
@@ -92,6 +96,7 @@ export async function POST(req: Request) {
 
     return Response.json({ entries: allEntries })
   } catch (error) {
+    Sentry.captureException(error, { tags: { route: 'api/tracker', method: 'POST' } })
     console.error('Tracker POST error:', error)
     return Response.json({ error: 'Failed to sync entries' }, { status: 500 })
   }
@@ -118,6 +123,7 @@ export async function DELETE(req: Request) {
 
     return Response.json({ success: true })
   } catch (error) {
+    Sentry.captureException(error, { tags: { route: 'api/tracker', method: 'DELETE' } })
     console.error('Tracker DELETE error:', error)
     return Response.json({ error: 'Failed to delete entry' }, { status: 500 })
   }

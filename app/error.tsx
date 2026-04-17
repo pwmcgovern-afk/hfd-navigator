@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import * as Sentry from '@sentry/nextjs'
 
 // Error boundaries can fire when the LanguageProvider itself fails, so we
 // avoid useLanguage() here and read the persisted preference directly. If
-// nothing is set or the read throws, we fall back to English copy.
+// nothing is set or the read throws (SSR, restricted storage), we fall back
+// to English copy — the goal is that this screen always renders.
 const COPY = {
   en: {
     title: 'Something went wrong',
@@ -36,6 +38,9 @@ export default function Error({
     } catch {
       // localStorage may be blocked — keep the default
     }
+    // Capture for observability. Sentry no-ops when NEXT_PUBLIC_SENTRY_DSN
+    // is unset, so this stays cheap until Pat wires the DSN.
+    Sentry.captureException(error)
     console.error('App error boundary:', error)
   }, [error])
 

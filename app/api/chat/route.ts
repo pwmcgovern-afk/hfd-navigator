@@ -1,8 +1,11 @@
-import { streamText } from 'ai'
+import { streamText, tool } from 'ai'
 import { anthropic } from '@ai-sdk/anthropic'
-import { prisma } from '@/lib/db'
+import { z } from 'zod'
+import * as Sentry from '@sentry/nextjs'
+import { searchResources, getResourceDetails } from '@/lib/search'
 
-// Simple in-memory rate limiter (per-IP, resets on server restart)
+// Per-IP rate limiter (resets on cold start; in-memory is fine for portfolio
+// scale — swap for Upstash if traffic ever justifies the dependency).
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 const RATE_LIMIT = 20
 const RATE_WINDOW_MS = 60 * 60 * 1000
@@ -10,137 +13,36 @@ const RATE_WINDOW_MS = 60 * 60 * 1000
 function isRateLimited(ip: string): boolean {
   const now = Date.now()
   const entry = rateLimitMap.get(ip)
-
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
     return false
   }
-
   entry.count++
   return entry.count > RATE_LIMIT
 }
 
-// Cached resource data (refreshes every hour)
-interface CachedResource {
-  id: string
-  name: string
-  nameEs: string | null
-  organization: string | null
-  description: string
-  descriptionEs: string | null
-  categories: string[]
-  phone: string | null
-  address: string | null
-  hours: string | null
-  website: string | null
-  // Lowercase searchable text for keyword matching
-  searchText: string
+// System prompt is intentionally short so the model leans on tool calls
+// rather than a giant in-context dump. The block is marked for ephemeral
+// caching (5-min TTL) so multi-turn conversations and bursty traffic only
+// pay full input price on the first request.
+function buildSystemPrompt(language: 'en' | 'es') {
+  return `You are the Hartford Navigator assistant, helping residents find free or low-cost social services in Hartford, CT.
+
+${language === 'es'
+  ? 'Respond ONLY in Spanish. The user has selected Spanish.'
+  : 'Respond in English unless the user writes in Spanish.'}
+
+How you work:
+- Use the search_resources tool to find resources that match the user's situation. Search broadly first, then narrow if needed.
+- Use the get_resource_details tool when you want phone, address, or hours for a resource you plan to recommend.
+- NEVER invent or guess a resource that didn't come back from a tool call. If nothing fits, say so plainly and suggest calling 211.
+- Always link to recommended resources with this exact markdown: [Resource Name](/resources/RESOURCE_ID)
+- Keep responses short: 2–4 short paragraphs. Lead with the most relevant 1–2 resources, then briefly mention alternatives if helpful.
+- For crisis situations (suicidal thoughts, immediate danger, domestic violence in progress), direct to 988 or 911 first, before searching.
+- Be warm, direct, non-judgmental. Plain language — no jargon.`
 }
 
-let cachedResources: CachedResource[] | null = null
-let cacheExpiry = 0
-
-async function getAllResources(): Promise<CachedResource[]> {
-  const now = Date.now()
-  if (cachedResources && now < cacheExpiry) {
-    return cachedResources
-  }
-
-  const resources = await prisma.resource.findMany({
-    select: {
-      id: true,
-      name: true,
-      nameEs: true,
-      organization: true,
-      description: true,
-      descriptionEs: true,
-      categories: true,
-      phone: true,
-      address: true,
-      hours: true,
-      website: true,
-    },
-  })
-
-  cachedResources = resources.map(r => ({
-    ...r,
-    searchText: [
-      r.name,
-      r.nameEs,
-      r.organization,
-      r.description,
-      r.descriptionEs,
-      ...r.categories,
-    ].filter(Boolean).join(' ').toLowerCase()
-  }))
-
-  cacheExpiry = now + 60 * 60 * 1000
-  return cachedResources
-}
-
-// Select resources most relevant to the user's query
-function selectRelevantResources(
-  query: string,
-  allResources: CachedResource[],
-  maxResults: number = 25
-): CachedResource[] {
-  const queryWords = query.toLowerCase()
-    .replace(/[^\w\sáéíóúñü]/g, '')
-    .split(/\s+/)
-    .filter(w => w.length > 2)
-
-  if (queryWords.length === 0) {
-    // No meaningful keywords — return a diverse sample
-    return allResources.slice(0, maxResults)
-  }
-
-  // Score each resource by keyword match count
-  const scored = allResources.map(resource => {
-    let score = 0
-    for (const word of queryWords) {
-      if (resource.searchText.includes(word)) {
-        score++
-        // Boost for name/category matches
-        if (resource.name.toLowerCase().includes(word)) score += 2
-        if (resource.categories.some(c => c.includes(word))) score += 2
-      }
-    }
-    return { resource, score }
-  })
-
-  // Return top matches (scored > 0), plus a few extras for breadth
-  const matches = scored
-    .filter(s => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxResults)
-    .map(s => s.resource)
-
-  // If very few matches, pad with some general resources
-  if (matches.length < 5) {
-    const matchIds = new Set(matches.map(m => m.id))
-    const extras = allResources
-      .filter(r => !matchIds.has(r.id))
-      .slice(0, 10)
-    return [...matches, ...extras].slice(0, maxResults)
-  }
-
-  return matches
-}
-
-function formatResourceForPrompt(r: CachedResource): string {
-  return [
-    r.id,
-    r.name,
-    r.nameEs || '',
-    r.organization || '',
-    r.categories.join(','),
-    r.description.slice(0, 200),
-    (r.descriptionEs || '').slice(0, 200),
-    r.phone || '',
-    r.address || '',
-    r.hours || '',
-  ].join('|')
-}
+const MODEL_ID = 'claude-sonnet-4-6'
 
 export async function POST(req: Request) {
   try {
@@ -173,43 +75,108 @@ export async function POST(req: Request) {
     }
 
     const recentMessages = messages.slice(-20)
+    const systemPrompt = buildSystemPrompt(language)
+    const startedAt = Date.now()
 
-    // Extract the user's latest query for keyword matching
-    const lastUserMessage = [...recentMessages]
-      .reverse()
-      .find(m => m.role === 'user')?.content || ''
+    const tools = {
+      search_resources: tool({
+        description:
+          'Search the Hartford Navigator directory for social-service resources. Use a free-text query describing the user\'s need (e.g. "rental assistance late on rent", "free dental clinic", "food pantry near downtown"). Optionally narrow by category. Returns matching resources with id, name, snippet, and match score. Call this first before recommending anything.',
+        parameters: z.object({
+          query: z
+            .string()
+            .optional()
+            .describe('Natural language search terms. Omit if filtering only by category.'),
+          category: z
+            .enum([
+              'housing',
+              'food',
+              'cash',
+              'harm-reduction',
+              'healthcare',
+              'mental-health',
+              'employment',
+              'childcare',
+              'legal',
+              'transportation',
+              'utilities',
+              'immigration',
+            ])
+            .optional()
+            .describe('Restrict results to a single category slug.'),
+          limit: z
+            .number()
+            .int()
+            .min(1)
+            .max(15)
+            .optional()
+            .describe('Max number of results (default 10).'),
+        }),
+        execute: async ({ query, category, limit }) => {
+          const hits = await searchResources({ query, category, limit })
+          return {
+            count: hits.length,
+            results: hits,
+          }
+        },
+      }),
 
-    const allResources = await getAllResources()
-    const relevantResources = selectRelevantResources(lastUserMessage, allResources)
-    const resourceList = relevantResources.map(formatResourceForPrompt).join('\n')
+      get_resource_details: tool({
+        description:
+          'Fetch the full record for a single resource by id. Use this to look up phone, address, hours, or website before recommending a resource to the user.',
+        parameters: z.object({
+          id: z.string().describe('Resource UUID returned from search_resources.'),
+        }),
+        execute: async ({ id }) => {
+          const detail = await getResourceDetails(id)
+          if (!detail) {
+            return { error: 'Resource not found.' }
+          }
+          return detail
+        },
+      }),
+    }
 
-    const isSpanish = language === 'es'
-
-    const systemPrompt = `You are a helpful assistant for Hartford Navigator, a social services directory for Hartford, CT residents.
-
-${isSpanish ? 'IMPORTANT: Respond in Spanish. The user has selected Spanish as their language.' : 'Respond in English.'}
-
-RULES:
-- Only recommend resources from the database below. Never invent resources.
-- Always link to resources using this format: [Resource Name](/resources/RESOURCE_ID)
-- Include phone numbers when available.
-- For crisis situations (suicidal thoughts, immediate danger), direct to 988 Suicide & Crisis Lifeline or 911.
-- Keep responses concise: 2-4 short paragraphs.
-- If no matching resource exists, suggest calling 211 for additional help.
-- Be warm, direct, and non-judgmental.
-
-RESOURCE DATABASE (${relevantResources.length} most relevant of ${allResources.length} total — id|name|nameEs|org|categories|description|descriptionEs|phone|address|hours):
-${resourceList}`
-
+    // Anthropic prompt caching: tool defs are auto-cached when any system or
+    // message block is marked, so we attach cacheControl to the system block
+    // (system prompt + tools change rarely). On a 5-min window this drops
+    // input cost ~90% for follow-up turns.
     const result = streamText({
-      model: anthropic('claude-sonnet-4-20250514'),
-      system: systemPrompt,
-      messages: recentMessages,
+      model: anthropic(MODEL_ID),
+      messages: [
+        {
+          role: 'system',
+          content: systemPrompt,
+          providerOptions: {
+            anthropic: { cacheControl: { type: 'ephemeral' } },
+          },
+        },
+        ...recentMessages,
+      ],
+      tools,
+      maxSteps: 5,
       maxTokens: 1024,
+      onFinish: ({ usage, finishReason, steps }) => {
+        const ms = Date.now() - startedAt
+        const toolCalls = steps?.reduce((n, s) => n + (s.toolCalls?.length || 0), 0) ?? 0
+        console.log(
+          JSON.stringify({
+            event: 'chat_complete',
+            ms,
+            language,
+            messageCount: recentMessages.length,
+            toolCalls,
+            finishReason,
+            inputTokens: usage?.promptTokens,
+            outputTokens: usage?.completionTokens,
+          })
+        )
+      },
     })
 
     return result.toDataStreamResponse()
   } catch (error) {
+    Sentry.captureException(error, { tags: { route: 'api/chat' } })
     console.error('Chat API error:', error)
     return new Response(
       JSON.stringify({ error: 'An error occurred processing your request.' }),
