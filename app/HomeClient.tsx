@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
 import LanguageToggle from '@/components/LanguageToggle'
+import NavigatorWordmark from '@/components/NavigatorWordmark'
 import { getCategoriesWithDetails } from '@/lib/categories'
 import { Button } from '@/components/ui/button'
 
@@ -48,34 +49,33 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
     <div className="min-h-screen">
       <a href="#main-content" className="skip-link">{t.skipToMain}</a>
 
-      {/* Hero Section — full-width teal background, breaks out of parent max-w-lg */}
-      <div style={{
-        background: 'linear-gradient(145deg, #0D6E6E 0%, #095252 100%)',
-        marginLeft: 'calc(-50vw + 50%)',
-        marginRight: 'calc(-50vw + 50%)',
-        width: '100vw',
-      }}>
+      {/* Hero Section — full-width gradient. Color comes from --color-primary
+          via .hero-bg, so each city's fork shows its own hue. */}
+      <div className="hero-bg">
         <div className="max-w-lg mx-auto px-5">
           {/* Header inside hero */}
           <header className="pt-4 pb-2 flex items-center justify-between" role="banner">
-            <span className="text-[13px] font-semibold tracking-widest uppercase text-white/70">
-              Navigator
-            </span>
+            <NavigatorWordmark />
             <LanguageToggle />
           </header>
 
-          {/* Elm tree icon */}
+          {/* Charter Oak — Hartford's iconic white oak that hid the colony's
+              charter from English seizure in 1687. Wider, sturdier silhouette
+              than NHV's elm to nod to its mythic stature. Same visual language:
+              white-on-gradient, simple shapes, ~0.5 opacity. */}
           <div className="pt-6 pb-2">
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ opacity: 0.5 }}>
-              {/* Canopy */}
-              <ellipse cx="20" cy="14" rx="12" ry="10" fill="white" />
-              <ellipse cx="14" cy="16" rx="7" ry="7" fill="white" />
-              <ellipse cx="26" cy="16" rx="7" ry="7" fill="white" />
-              <ellipse cx="20" cy="10" rx="8" ry="7" fill="white" />
-              {/* Trunk */}
-              <rect x="18" y="22" width="4" height="14" rx="2" fill="white" />
+              {/* Wide spreading canopy — the Charter Oak was famously massive */}
+              <ellipse cx="20" cy="13" rx="16" ry="9" fill="white" />
+              <ellipse cx="10" cy="15" rx="6" ry="6" fill="white" />
+              <ellipse cx="30" cy="15" rx="6" ry="6" fill="white" />
+              <ellipse cx="20" cy="8" rx="9" ry="5" fill="white" />
+              {/* Knot / branch detail on the side */}
+              <ellipse cx="14" cy="20" rx="2.5" ry="2" fill="white" />
+              {/* Thick gnarled trunk */}
+              <path d="M17 22 L23 22 L24 33 L16 33 Z" fill="white" />
               {/* Roots */}
-              <path d="M16 34 C18 32, 18 36, 20 36 C22 36, 22 32, 24 34" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M14 34 C16 32, 18 36, 20 36 C22 36, 24 32, 26 34" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             </svg>
           </div>
 
@@ -143,11 +143,11 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
           </div>
 
           {/* 211 CTA */}
-          <section className="rounded-2xl p-6 mb-6 text-center" style={{ background: '#F0FAF0', border: '1px solid #C8E6C9' }}>
-            <a href="tel:211" className="text-lg font-bold" style={{ color: '#2E7D32' }}>
+          <section className="cta-211 mb-6">
+            <a href="tel:211" className="cta-211-call">
               {t.call211}
             </a>
-            <p className="text-sm mt-1" style={{ color: '#558B2F' }}>{t.call211Sub}</p>
+            <p className="cta-211-sub">{t.call211Sub}</p>
           </section>
         </main>
 

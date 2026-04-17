@@ -256,23 +256,7 @@ export default function ChatWidget() {
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(s.label)}
-                      className="text-left text-sm px-4 py-2.5 rounded-2xl transition-all duration-200"
-                      style={{
-                        background: 'var(--color-surface)',
-                        border: '1.5px solid var(--color-border)',
-                        color: 'var(--color-text)',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.transform = 'translateY(-1px)'
-                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(13,110,110,0.12)'
-                        e.currentTarget.style.borderColor = 'var(--color-primary)'
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.transform = 'translateY(0)'
-                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'
-                        e.currentTarget.style.borderColor = 'var(--color-border)'
-                      }}
+                      className="chat-suggestion"
                     >
                       <span className="mr-2" aria-hidden="true">{s.icon}</span>
                       {s.label}
