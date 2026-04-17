@@ -88,8 +88,8 @@ export default async function AdminResourcesPage({
 
       {/* Success message */}
       {searchParams.success && (
-        <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
-          Resource {searchParams.success} successfully.
+        <div className="info-card success mb-4" role="status">
+          <p className="text-sm font-medium">Resource {searchParams.success} successfully.</p>
         </div>
       )}
 

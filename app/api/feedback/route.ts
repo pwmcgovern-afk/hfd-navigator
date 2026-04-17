@@ -1,9 +1,26 @@
 import { prisma } from '@/lib/db'
 
+// Per-IP rate limiter mirroring the chat route. Resets on cold start.
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 30
+const RATE_WINDOW_MS = 60 * 60 * 1000
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return false
+  }
+  entry.count++
+  return entry.count > RATE_LIMIT
+}
+
 async function sendNegativeFeedbackAlert(resourceId: string) {
   const resendKey = process.env.RESEND_API_KEY
-  const alertEmail = process.env.ADMIN_EMAIL || 'pwmcgovern@gmail.com'
-  if (!resendKey) return // Email alerts not configured — skip silently
+  const alertEmail = process.env.ADMIN_EMAIL
+  // Skip silently if either is missing — never fall back to a hardcoded address.
+  if (!resendKey || !alertEmail) return
 
   try {
     const resource = await prisma.resource.findUnique({
@@ -35,6 +52,17 @@ async function sendNegativeFeedbackAlert(resourceId: string) {
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || req.headers.get('x-real-ip')
+      || 'unknown'
+
+    if (isRateLimited(ip)) {
+      return new Response(
+        JSON.stringify({ error: 'Too many requests. Please try again later.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+
     const body = await req.json()
     const { resourceId, helpful } = body
 
@@ -49,9 +77,12 @@ export async function POST(req: Request) {
       data: { resourceId, helpful }
     })
 
-    // Send email alert on negative feedback (non-blocking)
+    // Send email alert on negative feedback (non-blocking; explicit catch so
+    // a Resend outage can't surface as an unhandled promise rejection)
     if (!helpful) {
-      sendNegativeFeedbackAlert(resourceId)
+      sendNegativeFeedbackAlert(resourceId).catch(err => {
+        console.error('Negative feedback alert failed:', err)
+      })
     }
 
     return new Response(

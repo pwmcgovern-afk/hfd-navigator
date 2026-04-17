@@ -9,7 +9,7 @@ const TOKEN_KEY = 'nhn-tracker-token'
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined)
 
 function generateId(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36)
+  return crypto.randomUUID()
 }
 
 function generateToken(): string {

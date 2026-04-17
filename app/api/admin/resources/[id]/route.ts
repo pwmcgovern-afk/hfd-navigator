@@ -52,7 +52,16 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         ...(body.descriptionEs !== undefined && { descriptionEs: body.descriptionEs || null }),
         ...(body.howToApplyEs !== undefined && { howToApplyEs: body.howToApplyEs || null }),
         ...(body.tipsEs !== undefined && { tipsEs: body.tipsEs }),
-        ...(body.verifiedAt !== undefined && { verifiedAt: body.verifiedAt ? new Date(body.verifiedAt) : null }),
+        ...(body.verifiedAt !== undefined && {
+          verifiedAt: (() => {
+            if (!body.verifiedAt) return null
+            const d = new Date(body.verifiedAt)
+            if (isNaN(d.getTime())) {
+              throw new Error(`Invalid verifiedAt date: ${body.verifiedAt}`)
+            }
+            return d
+          })(),
+        }),
       }
     })
 

@@ -220,17 +220,34 @@ export default function ResourcesClient({ resources, query, category, insurance,
         </nav>
 
         {locationError && (
-          <p className="text-xs mb-2" style={{ color: 'var(--color-error)' }}>
-            {language === 'es' ? 'No se pudo obtener su ubicacion' : 'Could not get your location'}
-          </p>
+          <div className="info-card error mb-3" role="alert">
+            <p className="text-sm" style={{ color: 'var(--color-error)' }}>
+              {language === 'es' ? 'No se pudo obtener su ubicación.' : 'Could not get your location.'}
+            </p>
+          </div>
         )}
 
-        {/* Results count - announced to screen readers */}
-        <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }} role="status" aria-live="polite">
-          {filteredResources.length} {filteredResources.length !== 1 ? t.resources : t.resource}
-          {query && ` ${t.forQuery} "${query}"`}
-          {category && ` ${t.inCategory} ${getCatName(category)}`}
-        </p>
+        {/* Results count + clear filters */}
+        <div className="flex items-baseline justify-between gap-3 mb-4">
+          <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }} role="status" aria-live="polite">
+            <span className="font-semibold" style={{ color: 'var(--color-text)' }}>
+              {filteredResources.length}
+            </span>{' '}
+            {filteredResources.length !== 1 ? t.resources : t.resource}
+            {query && ` ${t.forQuery} "${query}"`}
+            {category && ` ${t.inCategory} ${getCatName(category)}`}
+          </p>
+          {(query || category || openNowFilter || nearbySort || insurance || langFilter || accepting) && (
+            <Link
+              href="/resources"
+              onClick={() => { setOpenNowFilter(false); setNearbySort(false); }}
+              className="text-sm font-medium whitespace-nowrap"
+              style={{ color: 'var(--color-primary)' }}
+            >
+              {language === 'es' ? 'Limpiar filtros' : 'Clear filters'}
+            </Link>
+          )}
+        </div>
 
         {/* Results */}
         <section aria-label={t.resultsLabel}>

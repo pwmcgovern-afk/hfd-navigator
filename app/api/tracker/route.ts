@@ -27,64 +27,67 @@ export async function GET(req: Request) {
 }
 
 // POST /api/tracker — sync entries from client
+//
+// All writes for a single sync run inside one transaction so two concurrent
+// requests from the same user can't both miss the findFirst and create
+// duplicate (userId, resourceId) rows.
 export async function POST(req: Request) {
   try {
     const body = await req.json()
     const { token, entries } = body
 
-    if (!token || !Array.isArray(entries)) {
+    if (!token || typeof token !== 'string' || !Array.isArray(entries)) {
       return Response.json({ error: 'Token and entries required' }, { status: 400 })
     }
 
-    // Create or get anonymous user
-    let user = await prisma.anonymousUser.findUnique({ where: { token } })
-    if (!user) {
-      user = await prisma.anonymousUser.create({ data: { token } })
-    }
-
-    // Upsert each entry — use resourceId as the dedup key per user
-    for (const entry of entries) {
-      const existing = await prisma.trackerEntry.findFirst({
-        where: { userId: user.id, resourceId: entry.resourceId }
-      })
-
-      if (existing) {
-        await prisma.trackerEntry.update({
-          where: { id: existing.id },
-          data: {
-            resourceName: entry.resourceName,
-            resourceNameEs: entry.resourceNameEs || null,
-            organizationName: entry.organizationName || null,
-            status: entry.status,
-            outcome: entry.outcome || '',
-            contactPerson: entry.contactPerson || '',
-            dateContacted: entry.dateContacted || '',
-            notes: entry.notes || '',
-            updatedAt: new Date(),
-          }
-        })
-      } else {
-        await prisma.trackerEntry.create({
-          data: {
-            userId: user.id,
-            resourceId: entry.resourceId,
-            resourceName: entry.resourceName,
-            resourceNameEs: entry.resourceNameEs || null,
-            organizationName: entry.organizationName || null,
-            status: entry.status,
-            outcome: entry.outcome || '',
-            contactPerson: entry.contactPerson || '',
-            dateContacted: entry.dateContacted || '',
-            notes: entry.notes || '',
-          }
-        })
+    const allEntries = await prisma.$transaction(async (tx) => {
+      let user = await tx.anonymousUser.findUnique({ where: { token } })
+      if (!user) {
+        user = await tx.anonymousUser.create({ data: { token } })
       }
-    }
 
-    // Return all entries after sync
-    const allEntries = await prisma.trackerEntry.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' }
+      for (const entry of entries) {
+        const existing = await tx.trackerEntry.findFirst({
+          where: { userId: user.id, resourceId: entry.resourceId }
+        })
+
+        if (existing) {
+          await tx.trackerEntry.update({
+            where: { id: existing.id },
+            data: {
+              resourceName: entry.resourceName,
+              resourceNameEs: entry.resourceNameEs || null,
+              organizationName: entry.organizationName || null,
+              status: entry.status,
+              outcome: entry.outcome || '',
+              contactPerson: entry.contactPerson || '',
+              dateContacted: entry.dateContacted || '',
+              notes: entry.notes || '',
+              updatedAt: new Date(),
+            }
+          })
+        } else {
+          await tx.trackerEntry.create({
+            data: {
+              userId: user.id,
+              resourceId: entry.resourceId,
+              resourceName: entry.resourceName,
+              resourceNameEs: entry.resourceNameEs || null,
+              organizationName: entry.organizationName || null,
+              status: entry.status,
+              outcome: entry.outcome || '',
+              contactPerson: entry.contactPerson || '',
+              dateContacted: entry.dateContacted || '',
+              notes: entry.notes || '',
+            }
+          })
+        }
+      }
+
+      return tx.trackerEntry.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: 'desc' }
+      })
     })
 
     return Response.json({ entries: allEntries })

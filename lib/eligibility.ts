@@ -46,10 +46,18 @@ export function calculateEligibilityScore(
   const eligibility = resource.eligibility as EligibilityCriteria | null
   const reasons: MatchReason[] = []
 
-  // If no eligibility criteria, assume everyone qualifies
+  // If no eligibility criteria, assume everyone qualifies — but still apply
+  // the category-mismatch penalty so a "legal" resource doesn't outrank a
+  // "food" resource for someone who only said they need food.
   if (!eligibility) {
-    if (resource.categories.some(c => user.categoriesNeeded.includes(c))) {
+    const categoryMatch = resource.categories.some(c => user.categoriesNeeded.includes(c))
+    if (categoryMatch) {
       reasons.push({ type: 'match', message: 'Category match' })
+      return { score: 100, reasons }
+    }
+    if (user.categoriesNeeded.length > 0) {
+      reasons.push({ type: 'warning', message: 'Not in your selected categories' })
+      return { score: 75, reasons }
     }
     return { score: 100, reasons }
   }

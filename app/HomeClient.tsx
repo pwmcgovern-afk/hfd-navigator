@@ -6,37 +6,42 @@ import LanguageToggle from '@/components/LanguageToggle'
 import { getCategoriesWithDetails } from '@/lib/categories'
 import { Button } from '@/components/ui/button'
 
-const content = {
-  en: {
-    heroTitle: 'Find free help in Hartford',
-    heroSub: `Food, housing, healthcare, legal aid — ${resourceCount} resources in English and Spanish, all in one place.`,
-    heroCta: 'Find Resources for Me',
-    heroSecondary: 'Browse All Resources',
-    browseTitle: 'Browse by Category',
-    call211: 'Need help now? Call 211',
-    call211Sub: 'Free, confidential, 24/7',
-    skipToMain: 'Skip to main content',
-    footer: 'A free community resource for Hartford residents. Not affiliated with any government agency.',
-    resources: 'resources',
-  },
-  es: {
-    heroTitle: 'Encuentre ayuda gratuita en Hartford',
-    heroSub: `Comida, vivienda, salud, ayuda legal — ${resourceCount} recursos en ingles y espanol, todo en un solo lugar.`,
-    heroCta: 'Buscar Recursos',
-    heroSecondary: 'Ver Todos los Recursos',
-    browseTitle: 'Buscar por Categoria',
-    call211: 'Necesita ayuda ahora? Llame al 211',
-    call211Sub: 'Gratuito, confidencial, 24/7',
-    skipToMain: 'Saltar al contenido principal',
-    footer: 'Un recurso comunitario gratuito para residentes de Hartford. No afiliado a ninguna agencia del gobierno.',
-    resources: 'recursos',
+// `content` is built inside the component because the hero copy interpolates
+// `resourceCount`, which is only available as a prop. Defining it at module
+// scope referenced an undeclared identifier and crashed the page on first render.
+function buildContent(resourceCount: number) {
+  return {
+    en: {
+      heroTitle: 'Find free help in Hartford',
+      heroSub: `Food, housing, healthcare, legal aid — ${resourceCount} resources in English and Spanish, all in one place.`,
+      heroCta: 'Find Resources for Me',
+      heroSecondary: 'Browse All Resources',
+      browseTitle: 'Browse by Category',
+      call211: 'Need help now? Call 211',
+      call211Sub: 'Free, confidential, 24/7',
+      skipToMain: 'Skip to main content',
+      footer: 'A free community resource for Hartford residents. Not affiliated with any government agency.',
+      resources: 'resources',
+    },
+    es: {
+      heroTitle: 'Encuentre ayuda gratuita en Hartford',
+      heroSub: `Comida, vivienda, salud, ayuda legal — ${resourceCount} recursos en inglés y español, todo en un solo lugar.`,
+      heroCta: 'Buscar Recursos',
+      heroSecondary: 'Ver Todos los Recursos',
+      browseTitle: 'Buscar por Categoría',
+      call211: '¿Necesita ayuda ahora? Llame al 211',
+      call211Sub: 'Gratuito, confidencial, 24/7',
+      skipToMain: 'Saltar al contenido principal',
+      footer: 'Un recurso comunitario gratuito para residentes de Hartford. No afiliado a ninguna agencia del gobierno.',
+      resources: 'recursos',
+    }
   }
 }
 
 
 export default function Home({ resourceCount }: { resourceCount: number }) {
   const { language } = useLanguage()
-  const t = content[language]
+  const t = buildContent(resourceCount)[language]
   const cats = getCategoriesWithDetails(language)
 
   return (
@@ -95,20 +100,19 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
             <h2 id="browse-heading" className="text-lg font-bold mb-5">
               {t.browseTitle}
             </h2>
-            <nav aria-label={language === 'en' ? 'Resource categories' : 'Categorias de recursos'}>
+            <nav aria-label={language === 'en' ? 'Resource categories' : 'Categorías de recursos'}>
               <div className="grid grid-cols-2 gap-3">
                 {cats.map((category) => (
                   <Link
                     key={category.slug}
                     href={`/category/${category.slug}`}
-                    className="flex items-start gap-3 p-3.5 rounded-xl transition-all duration-150 hover:border-[var(--color-primary)] hover:shadow-sm"
-                    style={{ background: 'var(--color-surface)', border: '1.5px solid var(--color-border)' }}
+                    className="category-card"
                     aria-label={category.ariaLabel}
                   >
-                    <span className="text-2xl shrink-0" aria-hidden="true">{category.icon}</span>
+                    <span className="text-3xl shrink-0" aria-hidden="true">{category.icon}</span>
                     <div className="min-w-0">
-                      <div className="text-[13px] font-semibold" style={{ color: 'var(--color-text)' }}>{category.name}</div>
-                      <div className="text-[11px] leading-snug mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{category.description}</div>
+                      <div className="text-sm font-semibold" style={{ color: 'var(--color-text)' }}>{category.name}</div>
+                      <div className="text-xs leading-snug mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{category.description}</div>
                     </div>
                   </Link>
                 ))}

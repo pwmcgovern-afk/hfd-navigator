@@ -18,7 +18,7 @@ export default async function AdminSuggestionsPage() {
 
       {suggestions.length === 0 ? (
         <div className="bg-white rounded-xl p-12 shadow-sm border border-gray-200 text-center text-gray-400">
-          No suggestions received yet. Organizations can submit updates via the "Suggest Update" page.
+          No suggestions received yet. Organizations can submit updates via the &ldquo;Suggest Update&rdquo; page.
         </div>
       ) : (
         <div className="space-y-4">

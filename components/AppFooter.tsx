@@ -15,7 +15,7 @@ export default function AppFooter() {
         </Link>
         <span>·</span>
         <Link href="/terms" className="hover:underline">
-          {isEs ? 'Terminos' : 'Terms'}
+          {isEs ? 'Términos' : 'Terms'}
         </Link>
         <span>·</span>
         <Link href="/suggest" className="hover:underline">

@@ -71,6 +71,20 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
     setError('')
     setSaving(true)
 
+    // Parse eligibility JSON before the network call so the user gets a
+    // precise error in the form instead of a generic "save failed".
+    let eligibility: unknown = null
+    if (form.eligibility.trim()) {
+      try {
+        eligibility = JSON.parse(form.eligibility)
+      } catch (err) {
+        setSaving(false)
+        const reason = err instanceof Error ? err.message : 'invalid JSON'
+        setError(`Eligibility field is not valid JSON: ${reason}`)
+        return
+      }
+    }
+
     try {
       const body = {
         name: form.name,
@@ -91,7 +105,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
         descriptionEs: form.descriptionEs || null,
         howToApplyEs: form.howToApplyEs || null,
         tipsEs: form.tipsEs.split('\n').map(t => t.trim()).filter(Boolean),
-        eligibility: form.eligibility ? JSON.parse(form.eligibility) : null,
+        eligibility,
       }
 
       const url = mode === 'edit'

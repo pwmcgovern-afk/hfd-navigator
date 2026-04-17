@@ -82,7 +82,7 @@ export default function ChatWidget() {
   const suggestions = language === 'es' ? [
     { icon: '🏠', label: 'Necesito ayuda con vivienda' },
     { icon: '🍎', label: 'Necesito comida' },
-    { icon: '🏥', label: 'Necesito atencion medica' },
+    { icon: '🏥', label: 'Necesito atención médica' },
     { icon: '🧠', label: 'Necesito apoyo de salud mental' },
     { icon: '💵', label: 'Necesito ayuda financiera' },
     { icon: '⚖️', label: 'Necesito ayuda legal' },
