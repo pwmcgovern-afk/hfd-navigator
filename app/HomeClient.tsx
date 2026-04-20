@@ -9,14 +9,14 @@ import { getCategoriesWithDetails } from '@/lib/categories'
 function buildContent(resourceCount: number) {
   return {
     en: {
-      edition: 'Hartford, CT · Vol. 01',
+      edition: 'Hartford, CT',
       heroEyebrow: 'A free directory for Hartford residents',
       heroTitle: 'Find free help in Hartford',
       heroSub: `Food, housing, healthcare, legal aid — ${resourceCount} resources in English and Spanish, all in one place.`,
-      ctaWizardNum: '01',
-      ctaWizardLabel: 'Take the eligibility quiz',
-      ctaBrowseNum: '02',
+      ctaBrowseNum: '01',
       ctaBrowseLabel: 'Browse all resources',
+      ctaWizardNum: '02',
+      ctaWizardLabel: 'Take the eligibility quiz',
       browseTitle: 'Browse by Category',
       call211: 'Need help now? Call 211',
       call211Sub: 'Free, confidential, 24/7',
@@ -24,14 +24,14 @@ function buildContent(resourceCount: number) {
       footer: 'A free community resource for Hartford residents. Not affiliated with any government agency.',
     },
     es: {
-      edition: 'Hartford, CT · Vol. 01',
+      edition: 'Hartford, CT',
       heroEyebrow: 'Un directorio gratuito para residentes de Hartford',
       heroTitle: 'Encuentre ayuda gratuita en Hartford',
       heroSub: `Comida, vivienda, salud, ayuda legal — ${resourceCount} recursos en inglés y español, todo en un solo lugar.`,
-      ctaWizardNum: '01',
-      ctaWizardLabel: 'Tomar el cuestionario',
-      ctaBrowseNum: '02',
+      ctaBrowseNum: '01',
       ctaBrowseLabel: 'Ver todos los recursos',
+      ctaWizardNum: '02',
+      ctaWizardLabel: 'Tomar el cuestionario',
       browseTitle: 'Buscar por Categoría',
       call211: '¿Necesita ayuda ahora? Llame al 211',
       call211Sub: 'Gratuito, confidencial, 24/7',
@@ -82,14 +82,14 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
 
         <div className="hero__rule" />
         <div className="hero__ctas">
-          <Link href="/wizard" className="btn-editorial">
-            <span className="btn-editorial__num">{t.ctaWizardNum}</span>
-            <span className="btn-editorial__label">{t.ctaWizardLabel}</span>
-            <span className="btn-editorial__arrow" aria-hidden="true">→</span>
-          </Link>
-          <Link href="/resources" className="btn-editorial btn-editorial--outline">
+          <Link href="/resources" className="btn-editorial">
             <span className="btn-editorial__num">{t.ctaBrowseNum}</span>
             <span className="btn-editorial__label">{t.ctaBrowseLabel}</span>
+            <span className="btn-editorial__arrow" aria-hidden="true">→</span>
+          </Link>
+          <Link href="/wizard" className="btn-editorial btn-editorial--outline">
+            <span className="btn-editorial__num">{t.ctaWizardNum}</span>
+            <span className="btn-editorial__label">{t.ctaWizardLabel}</span>
             <span className="btn-editorial__arrow" aria-hidden="true">→</span>
           </Link>
         </div>
