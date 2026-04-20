@@ -8,10 +8,16 @@ import ChatWidget from '@/components/ChatWidget'
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration'
 import { Analytics } from '@vercel/analytics/react'
 import PageViewTracker from '@/components/PageViewTracker'
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+  axes: ['SOFT', 'opsz'],
+});
 
 export const metadata: Metadata = {
   title: 'Hartford Navigator',
@@ -47,7 +53,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#0D6E6E',
+  themeColor: '#C62828',
 }
 
 export default function RootLayout({
@@ -56,12 +62,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
+    <html lang="en" className={cn("font-sans", inter.variable, fraunces.variable)}>
       <body className="min-h-screen">
         <LanguageProvider>
           <TrackerProvider>
+            <CrisisBanner />
             <main className="max-w-lg mx-auto">
-              <CrisisBanner />
               {children}
               <AppFooter />
             </main>

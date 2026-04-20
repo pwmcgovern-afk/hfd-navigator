@@ -5,36 +5,38 @@ import { useLanguage } from '@/components/LanguageContext'
 import LanguageToggle from '@/components/LanguageToggle'
 import NavigatorWordmark from '@/components/NavigatorWordmark'
 import { getCategoriesWithDetails } from '@/lib/categories'
-import { Button } from '@/components/ui/button'
 
-// `content` is built inside the component because the hero copy interpolates
-// `resourceCount`, which is only available as a prop. Defining it at module
-// scope referenced an undeclared identifier and crashed the page on first render.
 function buildContent(resourceCount: number) {
   return {
     en: {
+      edition: 'Hartford, CT · Vol. 01',
+      heroEyebrow: 'A free directory for Hartford residents',
       heroTitle: 'Find free help in Hartford',
       heroSub: `Food, housing, healthcare, legal aid — ${resourceCount} resources in English and Spanish, all in one place.`,
-      heroCta: 'Find Resources for Me',
-      heroSecondary: 'Browse All Resources',
+      ctaWizardNum: '01',
+      ctaWizardLabel: 'Take the eligibility quiz',
+      ctaBrowseNum: '02',
+      ctaBrowseLabel: 'Browse all resources',
       browseTitle: 'Browse by Category',
       call211: 'Need help now? Call 211',
       call211Sub: 'Free, confidential, 24/7',
       skipToMain: 'Skip to main content',
       footer: 'A free community resource for Hartford residents. Not affiliated with any government agency.',
-      resources: 'resources',
     },
     es: {
+      edition: 'Hartford, CT · Vol. 01',
+      heroEyebrow: 'Un directorio gratuito para residentes de Hartford',
       heroTitle: 'Encuentre ayuda gratuita en Hartford',
       heroSub: `Comida, vivienda, salud, ayuda legal — ${resourceCount} recursos en inglés y español, todo en un solo lugar.`,
-      heroCta: 'Buscar Recursos',
-      heroSecondary: 'Ver Todos los Recursos',
+      ctaWizardNum: '01',
+      ctaWizardLabel: 'Tomar el cuestionario',
+      ctaBrowseNum: '02',
+      ctaBrowseLabel: 'Ver todos los recursos',
       browseTitle: 'Buscar por Categoría',
       call211: '¿Necesita ayuda ahora? Llame al 211',
       call211Sub: 'Gratuito, confidencial, 24/7',
       skipToMain: 'Saltar al contenido principal',
       footer: 'Un recurso comunitario gratuito para residentes de Hartford. No afiliado a ninguna agencia del gobierno.',
-      resources: 'recursos',
     }
   }
 }
@@ -49,47 +51,49 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
     <div className="min-h-screen">
       <a href="#main-content" className="skip-link">{t.skipToMain}</a>
 
-      {/* Hero Section — full-width gradient. Color comes from --color-primary
-          via .hero-bg, so each city's fork shows its own hue. */}
-      <div className="hero-bg">
-        <div className="max-w-lg mx-auto px-5">
-          {/* Header inside hero */}
-          <header className="pt-4 pb-2 flex items-center justify-between" role="banner">
-            <NavigatorWordmark />
-            <LanguageToggle />
-          </header>
+      {/* Editorial hero — parchment ground, dark serif title, city-color mark */}
+      <section className="hero">
+        <div className="hero__strip">
+          <NavigatorWordmark onDark={false} />
+          <span className="hero__edition">{t.edition}</span>
+          <LanguageToggle />
+        </div>
 
-          {/* Charter Oak — Hartford's iconic white oak that hid the colony's
-              charter from English seizure in 1687. Wider, sturdier silhouette
-              than NHV's elm to nod to its mythic stature. Same visual language:
-              white-on-gradient, simple shapes, ~0.5 opacity. */}
-          <div className="pt-6 pb-2">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ opacity: 0.5 }}>
-              {/* Wide spreading canopy — the Charter Oak was famously massive */}
-              <ellipse cx="20" cy="13" rx="16" ry="9" fill="white" />
-              <ellipse cx="10" cy="15" rx="6" ry="6" fill="white" />
-              <ellipse cx="30" cy="15" rx="6" ry="6" fill="white" />
-              <ellipse cx="20" cy="8" rx="9" ry="5" fill="white" />
-              {/* Knot / branch detail on the side */}
-              <ellipse cx="14" cy="20" rx="2.5" ry="2" fill="white" />
-              {/* Thick gnarled trunk */}
-              <path d="M17 22 L23 22 L24 33 L16 33 Z" fill="white" />
-              {/* Roots */}
-              <path d="M14 34 C16 32, 18 36, 20 36 C22 36, 24 32, 26 34" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <div className="hero__grid" id="main-content">
+          <div className="hero__copy">
+            <p className="hero__eyebrow">{t.heroEyebrow}</p>
+            <h1 className="hero__title">{t.heroTitle}</h1>
+            <p className="hero__lede">{t.heroSub}</p>
+          </div>
+          <div className="hero__mark" aria-hidden="true">
+            {/* Charter Oak — Hartford's iconic white oak. Fills use
+                currentColor so .hero__mark tints with Hartford red. */}
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="20" cy="13" rx="16" ry="9" fill="currentColor" />
+              <ellipse cx="10" cy="15" rx="6" ry="6" fill="currentColor" />
+              <ellipse cx="30" cy="15" rx="6" ry="6" fill="currentColor" />
+              <ellipse cx="20" cy="8" rx="9" ry="5" fill="currentColor" />
+              <ellipse cx="14" cy="20" rx="2.5" ry="2" fill="currentColor" />
+              <path d="M17 22 L23 22 L24 33 L16 33 Z" fill="currentColor" />
+              <path d="M14 34 C16 32, 18 36, 20 36 C22 36, 24 32, 26 34" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             </svg>
           </div>
-
-          {/* Hero content */}
-          <section className="pb-12" id="main-content">
-            <h1 className="text-[2rem] sm:text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-white mb-4">
-              {t.heroTitle}
-            </h1>
-            <p className="text-base sm:text-lg leading-relaxed text-white/80 pb-2" style={{ maxWidth: '38ch' }}>
-              {t.heroSub}
-            </p>
-          </section>
         </div>
-      </div>
+
+        <div className="hero__rule" />
+        <div className="hero__ctas">
+          <Link href="/wizard" className="btn-editorial">
+            <span className="btn-editorial__num">{t.ctaWizardNum}</span>
+            <span className="btn-editorial__label">{t.ctaWizardLabel}</span>
+            <span className="btn-editorial__arrow" aria-hidden="true">→</span>
+          </Link>
+          <Link href="/resources" className="btn-editorial btn-editorial--outline">
+            <span className="btn-editorial__num">{t.ctaBrowseNum}</span>
+            <span className="btn-editorial__label">{t.ctaBrowseLabel}</span>
+            <span className="btn-editorial__arrow" aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
 
       {/* Main content */}
       <div className="max-w-lg mx-auto px-5">
@@ -119,21 +123,6 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
               </div>
             </nav>
           </section>
-
-          {/* CTAs — below categories */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-10">
-            <Link href="/wizard" className="flex-1">
-              <Button size="lg" className="w-full text-[15px] font-semibold h-12 rounded-xl" style={{ background: 'var(--color-primary)', color: 'white' }}>
-                {t.heroCta}
-                <svg className="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-              </Button>
-            </Link>
-            <Link href="/resources" className="flex-1">
-              <Button variant="outline" size="lg" className="w-full text-[15px] font-semibold h-12 rounded-xl">
-                {t.heroSecondary}
-              </Button>
-            </Link>
-          </div>
 
           {/* Quick Links */}
           <div className="flex gap-3 mb-6">
