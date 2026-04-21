@@ -39,6 +39,8 @@ export const CATEGORIES = [
   { slug: 'transportation', name: 'Transportation', icon: '🚌' },
   { slug: 'utilities', name: 'Utilities', icon: '💡' },
   { slug: 'immigration', name: 'Immigration', icon: '📄' },
+  { slug: 'senior', name: 'Senior Services', icon: '🧓' },
+  { slug: 'dental', name: 'Dental', icon: '🦷' },
 ] as const
 
 export type CategorySlug = typeof CATEGORIES[number]['slug']
