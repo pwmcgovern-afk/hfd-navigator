@@ -86,6 +86,20 @@ export const CATEGORIES_I18N = [
     ariaEn: 'Immigration resources including legal services and asylum help',
     ariaEs: 'Recursos de inmigración incluyendo servicios legales',
   },
+  {
+    slug: 'senior', icon: '🧓',
+    en: 'Senior Services', es: 'Servicios para Adultos Mayores',
+    descEn: 'Meals, care, Medicare', descEs: 'Comidas, cuidado, Medicare',
+    ariaEn: 'Senior services including meals, caregiver support, and Medicare help',
+    ariaEs: 'Servicios para adultos mayores incluyendo comidas, apoyo al cuidador y ayuda con Medicare',
+  },
+  {
+    slug: 'dental', icon: '🦷',
+    en: 'Dental', es: 'Dental',
+    descEn: 'Low-cost dental care', descEs: 'Atención dental de bajo costo',
+    ariaEn: 'Dental resources including low-cost cleanings and treatment',
+    ariaEs: 'Recursos dentales incluyendo limpiezas y tratamiento de bajo costo',
+  },
 ] as const
 
 export type CategorySlug = typeof CATEGORIES_I18N[number]['slug']

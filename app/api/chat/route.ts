@@ -101,6 +101,8 @@ export async function POST(req: Request) {
               'transportation',
               'utilities',
               'immigration',
+              'senior',
+              'dental',
             ])
             .optional()
             .describe('Restrict results to a single category slug.'),
