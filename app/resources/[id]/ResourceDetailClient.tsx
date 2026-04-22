@@ -130,6 +130,7 @@ export default function ResourceDetailClient({ resource }: Props) {
       : []
 
   const name = language === 'es' && resource.nameEs ? resource.nameEs : resource.name
+  const organization = language === 'es' && resource.organizationEs ? resource.organizationEs : resource.organization
   const description = language === 'es' && resource.descriptionEs ? resource.descriptionEs : resource.description
   const howToApply = language === 'es' && resource.howToApplyEs ? resource.howToApplyEs : resource.howToApply
 
@@ -201,8 +202,8 @@ export default function ResourceDetailClient({ resource }: Props) {
 
         {/* Name & Organization */}
         <h1 className="text-2xl font-semibold mb-1">{name}</h1>
-        {resource.organization && resource.organization !== resource.name && (
-          <p style={{ color: 'var(--color-text-secondary)' }}>{resource.organization}</p>
+        {organization && organization !== name && (
+          <p style={{ color: 'var(--color-text-secondary)' }}>{organization}</p>
         )}
 
         {/* Quick Info Badges */}

@@ -35,6 +35,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.organization !== undefined && { organization: body.organization || null }),
+        ...(body.organizationEs !== undefined && { organizationEs: body.organizationEs || null }),
         ...(body.description !== undefined && { description: body.description }),
         ...(body.categories !== undefined && { categories: body.categories }),
         ...(body.address !== undefined && { address: body.address || null }),

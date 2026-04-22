@@ -22,6 +22,7 @@ interface ResourceFormProps {
     eligibility: Record<string, unknown> | null
     howToApply: string | null
     tips: string[]
+    organizationEs: string | null
     nameEs: string | null
     descriptionEs: string | null
     howToApplyEs: string | null
@@ -50,6 +51,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
     hours: initialData?.hours || '',
     howToApply: initialData?.howToApply || '',
     tips: (initialData?.tips || []).join('\n'),
+    organizationEs: initialData?.organizationEs || '',
     nameEs: initialData?.nameEs || '',
     descriptionEs: initialData?.descriptionEs || '',
     howToApplyEs: initialData?.howToApplyEs || '',
@@ -101,6 +103,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
         hours: form.hours || null,
         howToApply: form.howToApply || null,
         tips: form.tips.split('\n').map(t => t.trim()).filter(Boolean),
+        organizationEs: form.organizationEs || null,
         nameEs: form.nameEs || null,
         descriptionEs: form.descriptionEs || null,
         howToApplyEs: form.howToApplyEs || null,
@@ -262,7 +265,11 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
             <input type="text" value={form.nameEs} onChange={e => setForm({ ...form, nameEs: e.target.value })} className={fieldClass} />
           </div>
           <div>
-            <label className={labelClass}>Descripcion (Description)</label>
+            <label className={labelClass}>Organización (Organization)</label>
+            <input type="text" value={form.organizationEs} onChange={e => setForm({ ...form, organizationEs: e.target.value })} className={fieldClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Descripción (Description)</label>
             <textarea value={form.descriptionEs} onChange={e => setForm({ ...form, descriptionEs: e.target.value })} rows={3} className={fieldClass} />
           </div>
           <div>

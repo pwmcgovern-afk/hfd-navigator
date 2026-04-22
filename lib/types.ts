@@ -14,6 +14,7 @@ export interface Resource {
   id: string
   name: string
   organization: string | null
+  organizationEs: string | null
   description: string
   categories: string[]
   address: string | null

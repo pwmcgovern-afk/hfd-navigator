@@ -16,7 +16,7 @@ export default async function ResourceDetailPage({
   const rows = await prisma.$queryRaw<Record<string, unknown>[]>(
     Prisma.sql`
       SELECT
-        id, name, organization, description, categories,
+        id, name, organization, "organizationEs", description, categories,
         address, city, state, zip, latitude, longitude,
         phone, website, email, hours,
         languages, "insuranceAccepted", cost, "acceptingClients",

@@ -11,7 +11,8 @@ datasource db {
 model Resource {
   id          String   @id @default(uuid())
   name        String
-  organization String?
+  organization   String?
+  organizationEs String?  // Spanish translation of the organization name
   description String
 
   categories  String[]

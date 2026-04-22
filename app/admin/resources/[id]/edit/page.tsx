@@ -25,6 +25,7 @@ export default async function EditResourcePage({
           id: resource.id,
           name: resource.name,
           organization: resource.organization,
+          organizationEs: resource.organizationEs,
           description: resource.description,
           categories: resource.categories,
           address: resource.address,

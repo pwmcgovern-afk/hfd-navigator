@@ -74,6 +74,7 @@ export async function POST(req: Request) {
       data: {
         name: body.name,
         organization: body.organization || null,
+        organizationEs: body.organizationEs || null,
         description: body.description,
         categories: body.categories,
         address: body.address || null,
