@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/db'
+import { SERVED_CITIES } from '@/lib/constants'
 import ResourcesClient from './ResourcesClient'
 
 export const dynamic = 'force-dynamic'
@@ -15,8 +16,10 @@ export default async function ResourcesPage({
   const { q, category, insurance, language: langFilter, accepting } = searchParams
   const safeQ = q?.slice(0, 200)?.trim()
 
-  // Build filter conditions
-  const conditions: Prisma.ResourceWhereInput[] = []
+  // Build filter conditions — always restrict to this instance's served cities
+  const conditions: Prisma.ResourceWhereInput[] = [
+    { city: { in: [...SERVED_CITIES] } },
+  ]
 
   if (safeQ && safeQ.length > 0) {
     conditions.push({
@@ -34,9 +37,7 @@ export default async function ResourcesPage({
   if (category) conditions.push({ categories: { has: category } })
   // Note: insurance, language, accepting filters temporarily disabled
 
-  const where: Prisma.ResourceWhereInput = conditions.length > 0
-    ? { AND: conditions }
-    : {}
+  const where: Prisma.ResourceWhereInput = { AND: conditions }
 
   const resources = await prisma.resource.findMany({
     where,

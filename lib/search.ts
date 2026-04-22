@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import { SERVED_CITIES } from '@/lib/constants'
 
 // A single resource shape used by both the chat tools and any other
 // in-process keyword search. Keep this lean — the full record lives in the
@@ -30,6 +31,7 @@ export async function loadResources(): Promise<SearchableResource[]> {
   if (cache && now < cacheExpiry) return cache
 
   const rows = await prisma.resource.findMany({
+    where: { city: { in: [...SERVED_CITIES] } },
     select: {
       id: true,
       name: true,

@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { prisma } from '@/lib/db'
+import { SERVED_CITIES } from '@/lib/constants'
 import { filterAndRankResources, UserProfile, ResourceWithEligibility } from '@/lib/eligibility'
 import ResultsClient from './ResultsClient'
 
@@ -24,11 +25,15 @@ async function ResultsContent({ searchParams }: { searchParams: SearchParams }) 
     categoriesNeeded: searchParams.categories?.split(',').filter(Boolean) || []
   }
 
-  // Filter at DB level by selected categories to avoid loading all resources
+  // Filter at DB level by served cities + selected categories to avoid
+  // loading all resources (including those from sister-city DBs).
   const dbResources = await prisma.resource.findMany({
-    where: userProfile.categoriesNeeded.length > 0
-      ? { categories: { hasSome: userProfile.categoriesNeeded } }
-      : {},
+    where: {
+      city: { in: [...SERVED_CITIES] },
+      ...(userProfile.categoriesNeeded.length > 0
+        ? { categories: { hasSome: userProfile.categoriesNeeded } }
+        : {}),
+    },
     select: {
       id: true,
       name: true,
