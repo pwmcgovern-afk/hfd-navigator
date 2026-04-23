@@ -67,43 +67,13 @@
     /* Touch target minimum: 48px */
     --touch-target: 3rem;  /* 48px */
 
-    /* Border radius - friendly but not distracting */
-    --radius-sm: 0.5rem;   /* 8px */
-    --radius-md: 0.75rem;  /* 12px */
-    --radius-lg: 1rem;     /* 16px */
+    /* Border radius — editorial: sharp containers, softer affordances.
+       Buttons keep 8px (radius-sm); cards drop to 8px (radius-lg)
+       so the parchment + hairline language carries through past the hero. */
+    --radius-sm: 0.5rem;   /* 8px — buttons + soft affordances */
+    --radius-md: 0.375rem; /* 6px — inputs, pills */
+    --radius-lg: 0.5rem;   /* 8px — cards (was 16px, dropped to match the editorial direction) */
     --radius-full: 9999px;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
   }
 
   /* Force light mode regardless of system preference */
@@ -210,46 +180,6 @@
   .skip-link:focus {
     top: 1rem;
   }
-  .theme {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-  }
-  .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
-  * {
-    /* borders handled by component classes */
-  }
 }
 
 @layer components {
@@ -268,7 +198,7 @@
     color: white;
     min-height: var(--touch-target);
     padding: var(--space-sm) var(--space-lg);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     border: 2px solid transparent;
     box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.2);
   }
@@ -295,7 +225,7 @@
     color: var(--color-text);
     min-height: var(--touch-target);
     padding: var(--space-sm) var(--space-lg);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     border: 2px solid var(--color-border-strong);
   }
 
@@ -321,7 +251,7 @@
     color: white;
     min-height: 3.5rem; /* 56px - extra large for important CTA */
     padding: var(--space-md) var(--space-xl);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     border: 2px solid transparent;
   }
 
@@ -342,7 +272,7 @@
     color: var(--color-primary);
     min-height: var(--touch-target);
     padding: var(--space-sm) var(--space-lg);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-sm);
     border: 2px solid var(--color-primary);
   }
 
@@ -548,7 +478,7 @@
      ============================================ */
 
   .hero-card {
-    background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
     color: white;
     border-radius: var(--radius-lg);
     padding: var(--space-2xl) var(--space-xl);
@@ -1032,6 +962,171 @@
 
   .btn-editorial:hover .btn-editorial__arrow {
     transform: translateX(4px);
+  }
+
+  /* ============================================
+     HERO STAMP — colophon-style mark behind the
+     city SVG. Same position across all 3 forks
+     so the family reads as a publication series.
+     ============================================ */
+
+  .hero__stamp {
+    width: clamp(96px, 28vw, 140px);
+    height: clamp(96px, 28vw, 140px);
+    border-radius: 50%;
+    background: var(--color-parchment-deep);
+    border: 1px solid var(--color-rule-strong);
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+  }
+
+  .hero__stamp svg {
+    width: 60%;
+    height: auto;
+    color: var(--color-primary);
+  }
+
+  /* ============================================
+     EDITORIAL PROSE — drop cap on first paragraph,
+     used on /about and other long-form content.
+     ============================================ */
+
+  .editorial-prose > p:first-of-type::first-letter {
+    font-family: var(--font-display);
+    font-size: 3.5em;
+    line-height: 0.85;
+    float: left;
+    padding: 0.1em 0.12em 0 0;
+    color: var(--color-primary);
+    font-variation-settings: 'SOFT' 0, 'opsz' 144;
+    font-weight: 500;
+  }
+
+  .editorial-prose section + section {
+    margin-top: 2.5rem;
+  }
+
+  /* Asterism divider — separates editorial sections */
+  .section-rule {
+    text-align: center;
+    color: var(--color-rule-strong);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    margin: 2rem 0;
+    letter-spacing: 0.5em;
+    user-select: none;
+  }
+
+  /* ============================================
+     FOLIO — permanent family-identity strip in
+     the footer. Current city in primary; sister
+     cities in muted text with hairline underline.
+     ============================================ */
+
+  .folio {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--color-rule);
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    letter-spacing: 0.02em;
+  }
+
+  .folio__current {
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+
+  .folio__sister {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .folio__sister:hover {
+    color: var(--color-text);
+    border-bottom-color: var(--color-rule-strong);
+  }
+
+  .folio__sep {
+    color: var(--color-rule-strong);
+  }
+
+  /* Colophon — masthead-style strip below folio */
+  .colophon {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-top: 0.75rem;
+    opacity: 0.75;
+  }
+
+  /* ============================================
+     PAGE HEADER — sub-page lockup that mirrors
+     the home hero strip + a serif title block,
+     so /about, /resources, etc. read as part of
+     the same publication.
+     ============================================ */
+
+  .page-header {
+    background: var(--color-bg);
+    padding: 1rem 1.25rem 0;
+  }
+
+  .page-header__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    transition: color 0.15s, transform 0.15s;
+  }
+
+  .page-header__back:hover {
+    color: var(--color-text);
+    transform: translateX(-2px);
+  }
+
+  .page-header__title-block {
+    padding: 1.5rem 0 1.25rem;
+  }
+
+  .page-header__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 6.5vw, 2.625rem);
+    font-weight: 480;
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    color: var(--color-text);
+    text-wrap: balance;
+    font-variation-settings: 'SOFT' 50, 'opsz' 144;
+    margin: 0;
+  }
+
+  /* ============================================
+     WORDMARK — slow rotate on hover so the brand
+     mark reads as considered, not placeholder.
+     ============================================ */
+
+  .navigator-wordmark svg {
+    transition: transform 0.6s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .navigator-wordmark:hover svg {
+    transform: rotate(180deg);
   }
 }
 

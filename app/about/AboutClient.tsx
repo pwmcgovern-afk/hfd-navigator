@@ -2,11 +2,13 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 
 const copy = {
   en: {
     back: 'Back to home',
+    edition: 'Hartford, CT',
+    eyebrow: 'About',
     title: 'About Hartford Navigator',
     lede: 'A free, bilingual directory of social services in Hartford — built so residents can find help in minutes, not hours.',
     whySection: 'Why it exists',
@@ -45,6 +47,8 @@ const copy = {
   },
   es: {
     back: 'Volver al inicio',
+    edition: 'Hartford, CT',
+    eyebrow: 'Acerca de',
     title: 'Acerca de Hartford Navigator',
     lede: 'Un directorio gratuito y bilingüe de servicios sociales en Hartford — creado para que los residentes encuentren ayuda en minutos, no en horas.',
     whySection: 'Por qué existe',
@@ -89,54 +93,50 @@ export default function AboutClient() {
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-10 px-5 py-4" style={{ background: 'var(--color-bg)', borderBottom: '2px solid var(--color-border)' }} role="banner">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="p-2 -ml-2 rounded-lg flex items-center gap-1"
-            style={{ color: 'var(--color-text-secondary)' }}
-            aria-label={t.back}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="text-sm font-medium">{t.back}</span>
-          </Link>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/"
+        backLabel={t.back}
+        edition={t.edition}
+        eyebrow={t.eyebrow}
+        title={t.title}
+      />
 
-      <main className="px-5 py-8" role="main" id="main-content">
-        <h1 className="text-3xl font-extrabold mb-4 leading-tight">{t.title}</h1>
+      <main className="px-5 pb-12 editorial-prose" role="main" id="main-content">
         <p className="text-lg leading-relaxed mb-10" style={{ color: 'var(--color-text-secondary)' }}>
           {t.lede}
         </p>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-3">{t.whySection}</h2>
-          <p className="mb-4">{t.whyBody}</p>
+        <section>
+          <h2>{t.whySection}</h2>
+          <p>{t.whyBody}</p>
           <p className="font-medium">{t.whyBody2}</p>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-4">{t.whatSection}</h2>
-          <ul className="space-y-4">
+        <div className="section-rule" aria-hidden="true">⁂</div>
+
+        <section>
+          <h2>{t.whatSection}</h2>
+          <ul className="space-y-4 mt-4">
             {t.whatBullets.map((b, i) => (
               <li key={i} className="card-flat">
-                <h3 className="font-semibold mb-1">{b.t}</h3>
+                <h3>{b.t}</h3>
                 <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{b.d}</p>
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-3">{t.howSection}</h2>
+        <div className="section-rule" aria-hidden="true">⁂</div>
+
+        <section>
+          <h2>{t.howSection}</h2>
           <p>{t.howBody}</p>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-3">{t.privacySection}</h2>
+        <div className="section-rule" aria-hidden="true">⁂</div>
+
+        <section>
+          <h2>{t.privacySection}</h2>
           <p>
             {t.privacyBody}{' '}
             <Link href="/privacy" style={{ color: 'var(--color-primary)' }} className="font-medium">
@@ -146,8 +146,10 @@ export default function AboutClient() {
           </p>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-3">{t.sistersSection}</h2>
+        <div className="section-rule" aria-hidden="true">⁂</div>
+
+        <section>
+          <h2>{t.sistersSection}</h2>
           <p className="mb-4">{t.sistersBody}</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <a
@@ -171,8 +173,10 @@ export default function AboutClient() {
           </div>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-xl font-bold mb-3">{t.whoSection}</h2>
+        <div className="section-rule" aria-hidden="true">⁂</div>
+
+        <section>
+          <h2>{t.whoSection}</h2>
           <p>
             {t.whoBody}{' '}
             <Link href="/suggest" style={{ color: 'var(--color-primary)' }} className="font-medium">
@@ -192,14 +196,14 @@ export default function AboutClient() {
           </p>
         </section>
 
-        <section className="info-card error mb-10" role="note">
+        <section className="info-card error my-10" role="note">
           <h2 className="font-bold mb-1">{t.crisisTitle}</h2>
           <p className="text-sm">{t.crisisBody}</p>
         </section>
 
         <section aria-labelledby="cta-title">
-          <h2 id="cta-title" className="text-xl font-bold mb-4">{t.ctaTitle}</h2>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <h2 id="cta-title">{t.ctaTitle}</h2>
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
             <Link href="/wizard" className="btn-primary flex-1">{t.ctaWizard}</Link>
             <Link href="/resources" className="btn-outline-lg flex-1">{t.ctaBrowse}</Link>
           </div>

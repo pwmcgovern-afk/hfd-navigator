@@ -66,8 +66,12 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
             <p className="hero__lede">{t.heroSub}</p>
           </div>
           <div className="hero__mark" aria-hidden="true">
+            {/* Colophon stamp — parchment-deep circle with hairline border
+                holds the city SVG. Same position across all 3 forks so the
+                family reads as a publication series. */}
+            <div className="hero__stamp">
             {/* Charter Oak — Hartford's iconic white oak. Fills use
-                currentColor so .hero__mark tints with Hartford red. */}
+                currentColor so the stamp tints with Hartford red. */}
             <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="20" cy="13" rx="16" ry="9" fill="currentColor" />
               <ellipse cx="10" cy="15" rx="6" ry="6" fill="currentColor" />
@@ -77,6 +81,7 @@ export default function Home({ resourceCount }: { resourceCount: number }) {
               <path d="M17 22 L23 22 L24 33 L16 33 Z" fill="currentColor" />
               <path d="M14 34 C16 32, 18 36, 20 36 C22 36, 24 32, 26 34" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
             </svg>
+            </div>
           </div>
         </div>
 

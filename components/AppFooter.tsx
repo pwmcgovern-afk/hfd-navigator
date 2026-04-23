@@ -31,30 +31,32 @@ export default function AppFooter() {
         </a>
       </div>
 
-      {/* Sister sites */}
-      <div
-        className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs"
-        style={{ color: 'var(--color-text-muted)' }}
-        aria-label={isEs ? 'Sitios hermanos' : 'Sister sites'}
-      >
-        <span>{isEs ? 'También en' : 'Also serving'}:</span>
+      {/* Folio — masthead-style strip showing the family of three sites.
+          Current city in primary color; sister cities link out with a
+          subtle hairline-on-hover. Replaces the older "Also serving" row. */}
+      <div className="folio" aria-label={isEs ? 'Sitios hermanos' : 'Sister sites'}>
         <a
           href="https://www.nhvnavigator.com"
           target="_blank"
           rel="noreferrer"
-          className="font-medium hover:underline"
+          className="folio__sister"
         >
           New Haven
         </a>
-        <span aria-hidden="true">·</span>
+        <span className="folio__sep" aria-hidden="true">·</span>
         <a
           href="https://www.bptnavigator.com"
           target="_blank"
           rel="noreferrer"
-          className="font-medium hover:underline"
+          className="folio__sister"
         >
           Bridgeport
         </a>
+        <span className="folio__sep" aria-hidden="true">·</span>
+        <span className="folio__current">Hartford</span>
+      </div>
+      <div className="colophon">
+        Navigator · Connecticut social services
       </div>
     </footer>
   )
