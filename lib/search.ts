@@ -179,13 +179,15 @@ async function vectorSearch(
 ): Promise<VectorHit[]> {
   const vectorLiteral = `[${queryEmbedding.join(',')}]`
   // pgvector cosine distance: `<=>` returns a value in [0, 2]; similarity = 1 - distance.
-  // We filter to rows with embeddings AND optionally a matching category.
-  // Prisma can't type the operator so we use $queryRaw with placeholders.
+  // We filter to rows with embeddings, served cities (so HFD doesn't surface
+  // Bridgeport entries from the shared DB), AND optionally a category.
+  const cities = [...SERVED_CITIES]
   if (category) {
     return prisma.$queryRaw<VectorHit[]>`
       SELECT id, (1 - (embedding <=> ${vectorLiteral}::vector))::float AS similarity
       FROM "Resource"
       WHERE embedding IS NOT NULL
+        AND city = ANY(${cities})
         AND ${category} = ANY(categories)
       ORDER BY embedding <=> ${vectorLiteral}::vector
       LIMIT ${limit}
@@ -195,6 +197,7 @@ async function vectorSearch(
     SELECT id, (1 - (embedding <=> ${vectorLiteral}::vector))::float AS similarity
     FROM "Resource"
     WHERE embedding IS NOT NULL
+      AND city = ANY(${cities})
     ORDER BY embedding <=> ${vectorLiteral}::vector
     LIMIT ${limit}
   `
