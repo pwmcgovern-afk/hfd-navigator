@@ -873,8 +873,6 @@
   .hero__mark {
     align-self: center;
     color: var(--color-primary);
-    opacity: 0.9;
-    margin-right: -1.25rem;
     display: flex;
     justify-content: flex-end;
     align-items: center;
