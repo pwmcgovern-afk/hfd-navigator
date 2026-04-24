@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { isOpenNow } from '@/lib/hoursParser'
 import { getCategoriesForLanguage, getCategoryInfo } from '@/lib/categories'
 import { getDistanceMiles } from '@/lib/geo'
@@ -117,26 +117,15 @@ export default function ResourcesClient({ resources, query, category, insurance,
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-10 px-5 py-4" style={{ background: 'var(--color-bg)', borderBottom: '2px solid var(--color-border)' }} role="banner">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="p-2 -ml-2 rounded-lg"
-              style={{ color: 'var(--color-text-secondary)' }}
-              aria-label={t.backHome}
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <h1 className="text-xl font-semibold">{t.title}</h1>
-          </div>
-          <LanguageToggle />
-        </div>
+      <PageHeader
+        back="/"
+        backLabel={t.backHome}
+        edition="Hartford, CT"
+        eyebrow={language === 'es' ? 'Directorio' : 'Directory'}
+        title={t.title}
+      />
 
-        {/* Search */}
+      <div className="px-5 pb-2">
         <form action="/resources" method="GET" role="search" aria-label={t.searchLabel}>
           <div className="relative">
             <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: 'var(--color-text-muted)' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -156,7 +145,7 @@ export default function ResourcesClient({ resources, query, category, insurance,
           {langFilter && <input type="hidden" name="language" value={langFilter} />}
           {accepting && <input type="hidden" name="accepting" value={accepting} />}
         </form>
-      </header>
+      </div>
 
       <main className="px-5 py-6" role="main" id="main-content">
         {/* Category filter */}

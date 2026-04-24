@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { getCategoryInfo } from '@/lib/categories'
 import { getTranslation } from '@/lib/translations'
 
@@ -64,27 +64,23 @@ export default function ResultsClient({ resources, selectedCategories }: Props) 
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-[var(--color-bg)] border-b border-[var(--color-border)] px-5 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/wizard" className="text-[var(--color-primary)] text-sm font-medium inline-flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            {t.editAnswers}
-          </Link>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/wizard"
+        backLabel={t.editAnswers}
+        edition="Hartford, CT"
+        eyebrow={language === 'es' ? 'Coincidencias' : 'Matches'}
+        title={t.title}
+      />
 
-      <main className="px-5 py-6 fade-in">
-        {/* Title + print */}
-        <div className="flex items-start justify-between mb-1">
-          <h1 className="text-2xl font-semibold">{t.title}</h1>
+      <main className="px-5 pb-12 fade-in">
+        <div className="flex items-baseline justify-between mb-6">
+          <p className="text-[var(--color-text-secondary)]">
+            {resources.length} {resources.length !== 1 ? t.resourcesMatch : t.resourceMatch}
+          </p>
           {resources.length > 0 && (
             <button
               onClick={() => window.print()}
-              className="print-hide text-sm flex items-center gap-1.5 mt-1"
+              className="print-hide text-sm flex items-center gap-1.5"
               style={{ color: 'var(--color-text-secondary)' }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -94,9 +90,6 @@ export default function ResultsClient({ resources, selectedCategories }: Props) 
             </button>
           )}
         </div>
-        <p className="text-[var(--color-text-secondary)] mb-6">
-          {resources.length} {resources.length !== 1 ? t.resourcesMatch : t.resourceMatch}
-        </p>
 
         {/* Selected category pills */}
         {selectedCategories.length > 0 && (

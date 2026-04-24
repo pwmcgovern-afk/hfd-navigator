@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { CATEGORIES_I18N } from '@/lib/categories'
 
 const content = {
@@ -111,15 +111,15 @@ export default function SuggestPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: '2px solid var(--color-border)' }}>
-        <Link href="/" className="p-2 -ml-2 rounded-lg" style={{ color: 'var(--color-text-secondary)' }}>
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-        </Link>
-        <LanguageToggle />
-      </header>
+      <PageHeader
+        back="/"
+        backLabel={t.backHome}
+        edition="Hartford, CT"
+        eyebrow={language === 'es' ? 'Contribuir' : 'Contribute'}
+        title={t.title}
+      />
 
-      <main className="px-5 py-8">
-        <h1 className="text-2xl font-bold mb-2">{t.title}</h1>
+      <main className="px-5 pb-12">
         <p className="text-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>{t.subtitle}</p>
 
         {/* Type toggle */}

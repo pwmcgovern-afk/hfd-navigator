@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { getCategoryInfo } from '@/lib/categories'
 import { getTranslation } from '@/lib/translations'
 
@@ -66,21 +66,15 @@ export default function ListClient({ resources, title }: { resources: Resource[]
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-10 px-5 py-4" style={{ background: 'var(--color-bg)', borderBottom: '2px solid var(--color-border)' }}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/resources" className="p-2 -ml-2 rounded-lg" style={{ color: 'var(--color-text-secondary)' }}>
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <h1 className="text-xl font-semibold">{displayTitle}</h1>
-          </div>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/resources"
+        backLabel={language === 'es' ? 'Volver a recursos' : 'Back to resources'}
+        edition="Hartford, CT"
+        eyebrow={language === 'es' ? 'Lista' : 'List'}
+        title={displayTitle}
+      />
 
-      <main className="px-5 py-6">
+      <main className="px-5 pb-12">
         {resources.length > 0 ? (
           <>
             <div className="flex items-center justify-between mb-4">
