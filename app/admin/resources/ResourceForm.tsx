@@ -146,7 +146,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
     }
   }
 
-  const fieldClass = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+  const fieldClass = 'w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent'
   const labelClass = 'block text-sm font-medium text-gray-700 mb-1'
 
   return (
@@ -184,7 +184,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
                 onClick={() => toggleCategory(cat.slug)}
                 className={`px-3 py-1.5 text-sm rounded-full border transition-colors ${
                   form.categories.includes(cat.slug)
-                    ? 'bg-teal-100 border-teal-300 text-teal-800'
+                    ? 'bg-[var(--color-primary-light)] border-[var(--color-primary)] text-[var(--color-primary)]'
                     : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -299,7 +299,7 @@ export default function ResourceForm({ initialData, mode }: ResourceFormProps) {
           <button
             type="submit"
             disabled={saving}
-            className="px-6 py-2 bg-teal-700 text-white text-sm font-medium rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors"
+            className="px-6 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-hover)] disabled:opacity-50 transition-colors"
           >
             {saving ? 'Saving...' : mode === 'edit' ? 'Update Resource' : 'Create Resource'}
           </button>

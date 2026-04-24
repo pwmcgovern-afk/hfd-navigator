@@ -104,7 +104,7 @@ export default async function AdminUsagePage() {
               {topResources.map((row, i) => (
                 <tr key={i}>
                   <td className="px-4 py-2 text-gray-600 truncate max-w-[200px]">
-                    <a href={`/admin/resources/${row.resourceId}/edit`} className="text-teal-700 hover:text-teal-900">
+                    <a href={`/admin/resources/${row.resourceId}/edit`} className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]">
                       {row.name || row.resourceId}
                     </a>
                   </td>

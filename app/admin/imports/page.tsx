@@ -58,7 +58,7 @@ export default function AdminImportsPage() {
           <button
             onClick={runImport}
             disabled={importStatus === 'running'}
-            className="px-4 py-2 bg-teal-700 text-white text-sm font-medium rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-hover)] disabled:opacity-50 transition-colors"
           >
             {importStatus === 'running' ? 'Importing... (this may take a minute)' : 'Run 211 Import'}
           </button>
@@ -95,7 +95,7 @@ export default function AdminImportsPage() {
           <button
             onClick={runTranslate}
             disabled={translateStatus === 'running'}
-            className="px-4 py-2 bg-teal-700 text-white text-sm font-medium rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-hover)] disabled:opacity-50 transition-colors"
           >
             {translateStatus === 'running' ? 'Translating... (this may take a few minutes)' : 'Translate Untranslated'}
           </button>
@@ -177,7 +177,7 @@ export default function AdminImportsPage() {
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={csvStatus === 'running'}
-            className="px-4 py-2 bg-teal-700 text-white text-sm font-medium rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-hover)] disabled:opacity-50 transition-colors"
           >
             {csvStatus === 'running' ? 'Importing...' : 'Upload CSV'}
           </button>

@@ -70,7 +70,7 @@ export default async function AdminFeedbackPage() {
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/admin/resources/${row.resourceId}/edit`}
-                      className="text-teal-700 hover:text-teal-900 text-xs font-medium"
+                      className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] text-xs font-medium"
                     >
                       Edit Resource
                     </Link>

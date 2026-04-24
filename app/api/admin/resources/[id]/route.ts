@@ -30,40 +30,64 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return Response.json({ error: 'Not found' }, { status: 404 })
     }
 
+    // Build the update payload. If an English field is edited without a
+    // matching Es override in the same request, clear the Es version so
+    // the nightly translation cron re-populates it. Prevents stale Spanish
+    // content from lingering after admin edits.
+    const updateData: Record<string, unknown> = {
+      ...(body.name !== undefined && { name: body.name }),
+      ...(body.organization !== undefined && { organization: body.organization || null }),
+      ...(body.organizationEs !== undefined && { organizationEs: body.organizationEs || null }),
+      ...(body.description !== undefined && { description: body.description }),
+      ...(body.categories !== undefined && { categories: body.categories }),
+      ...(body.address !== undefined && { address: body.address || null }),
+      ...(body.city !== undefined && { city: body.city }),
+      ...(body.state !== undefined && { state: body.state }),
+      ...(body.zip !== undefined && { zip: body.zip || null }),
+      ...(body.phone !== undefined && { phone: body.phone || null }),
+      ...(body.website !== undefined && { website: body.website || null }),
+      ...(body.email !== undefined && { email: body.email || null }),
+      ...(body.hours !== undefined && { hours: body.hours || null }),
+      ...(body.eligibility !== undefined && { eligibility: body.eligibility }),
+      ...(body.howToApply !== undefined && { howToApply: body.howToApply || null }),
+      ...(body.tips !== undefined && { tips: body.tips }),
+      ...(body.nameEs !== undefined && { nameEs: body.nameEs || null }),
+      ...(body.descriptionEs !== undefined && { descriptionEs: body.descriptionEs || null }),
+      ...(body.howToApplyEs !== undefined && { howToApplyEs: body.howToApplyEs || null }),
+      ...(body.tipsEs !== undefined && { tipsEs: body.tipsEs }),
+      ...(body.verifiedAt !== undefined && {
+        verifiedAt: (() => {
+          if (!body.verifiedAt) return null
+          const d = new Date(body.verifiedAt)
+          if (isNaN(d.getTime())) {
+            throw new Error(`Invalid verifiedAt date: ${body.verifiedAt}`)
+          }
+          return d
+        })(),
+      }),
+    }
+
+    // Auto-stale Es fields when EN was edited in isolation.
+    if (body.name !== undefined && body.name !== before.name && body.nameEs === undefined) {
+      updateData.nameEs = null
+    }
+    if (body.description !== undefined && body.description !== before.description && body.descriptionEs === undefined) {
+      updateData.descriptionEs = null
+    }
+    if (body.howToApply !== undefined && body.howToApply !== before.howToApply && body.howToApplyEs === undefined) {
+      updateData.howToApplyEs = null
+    }
+    if (
+      body.tips !== undefined &&
+      JSON.stringify(body.tips) !== JSON.stringify(before.tips) &&
+      body.tipsEs === undefined
+    ) {
+      updateData.tipsEs = []
+    }
+
     const resource = await prisma.resource.update({
       where: { id: params.id },
-      data: {
-        ...(body.name !== undefined && { name: body.name }),
-        ...(body.organization !== undefined && { organization: body.organization || null }),
-        ...(body.organizationEs !== undefined && { organizationEs: body.organizationEs || null }),
-        ...(body.description !== undefined && { description: body.description }),
-        ...(body.categories !== undefined && { categories: body.categories }),
-        ...(body.address !== undefined && { address: body.address || null }),
-        ...(body.city !== undefined && { city: body.city }),
-        ...(body.state !== undefined && { state: body.state }),
-        ...(body.zip !== undefined && { zip: body.zip || null }),
-        ...(body.phone !== undefined && { phone: body.phone || null }),
-        ...(body.website !== undefined && { website: body.website || null }),
-        ...(body.email !== undefined && { email: body.email || null }),
-        ...(body.hours !== undefined && { hours: body.hours || null }),
-        ...(body.eligibility !== undefined && { eligibility: body.eligibility }),
-        ...(body.howToApply !== undefined && { howToApply: body.howToApply || null }),
-        ...(body.tips !== undefined && { tips: body.tips }),
-        ...(body.nameEs !== undefined && { nameEs: body.nameEs || null }),
-        ...(body.descriptionEs !== undefined && { descriptionEs: body.descriptionEs || null }),
-        ...(body.howToApplyEs !== undefined && { howToApplyEs: body.howToApplyEs || null }),
-        ...(body.tipsEs !== undefined && { tipsEs: body.tipsEs }),
-        ...(body.verifiedAt !== undefined && {
-          verifiedAt: (() => {
-            if (!body.verifiedAt) return null
-            const d = new Date(body.verifiedAt)
-            if (isNaN(d.getTime())) {
-              throw new Error(`Invalid verifiedAt date: ${body.verifiedAt}`)
-            }
-            return d
-          })(),
-        }),
-      }
+      data: updateData,
     })
 
     // Log the changes

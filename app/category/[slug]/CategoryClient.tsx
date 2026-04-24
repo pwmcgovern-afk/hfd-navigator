@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useLanguage } from '@/components/LanguageContext'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { getCategoryInfo } from '@/lib/categories'
 import { getTranslation } from '@/lib/translations'
 
@@ -57,21 +57,13 @@ export default function CategoryClient({ slug, resources }: Props) {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-[var(--color-bg)] border-b border-[var(--color-border)] px-5 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </Link>
-            <span className="text-2xl">{category.icon}</span>
-            <h1 className="text-xl font-semibold">{category.name}</h1>
-          </div>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/"
+        backLabel={language === 'es' ? 'Volver al inicio' : 'Back to home'}
+        edition="Hartford, CT"
+        eyebrow={`${category.icon} ${language === 'es' ? 'Categoría' : 'Category'}`}
+        title={category.name}
+      />
 
       <main className="px-5 py-6 fade-in">
         {/* Results count + print */}

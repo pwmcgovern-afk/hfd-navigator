@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { useLanguage } from '@/components/LanguageContext'
 import { useTracker } from '@/components/TrackerContext'
 import { statusConfig, type TrackerStatus, type TrackerEntry } from '@/lib/trackerTypes'
@@ -114,23 +114,13 @@ export default function TrackerClient() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-10 glass px-5 py-4" role="banner">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="p-2 -ml-2 rounded-xl"
-            style={{ color: 'var(--color-text-secondary)' }}
-            aria-label={t.backHome}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </Link>
-          <h1 className="font-bold" style={{ color: 'var(--color-primary)' }}>{t.myTracker}</h1>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/"
+        backLabel={t.backHome}
+        edition="Hartford, CT"
+        eyebrow={language === 'es' ? 'Seguimiento' : 'Tracker'}
+        title={t.myTracker}
+      />
 
       <main className="px-5 py-6 fade-in" role="main" id="main-content">
         {/* Share list link */}

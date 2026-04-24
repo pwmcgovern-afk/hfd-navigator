@@ -80,7 +80,7 @@ export default async function AdminResourcesPage({
         <h1 className="text-2xl font-bold text-gray-900">Resources ({total})</h1>
         <Link
           href="/admin/resources/new"
-          className="px-4 py-2 bg-teal-700 text-white text-sm font-medium rounded-lg hover:bg-teal-800 transition-colors"
+          className="px-4 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-lg hover:bg-[var(--color-primary-hover)] transition-colors"
         >
           + Add Resource
         </Link>
@@ -186,7 +186,7 @@ export default async function AdminResourcesPage({
                 <td className="px-4 py-3 text-right">
                   <Link
                     href={`/admin/resources/${resource.id}/edit`}
-                    className="text-teal-700 hover:text-teal-900 text-xs font-medium"
+                    className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] text-xs font-medium"
                   >
                     Edit
                   </Link>

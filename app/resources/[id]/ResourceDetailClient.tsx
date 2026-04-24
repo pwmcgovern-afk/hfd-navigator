@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import ShareButton from '@/components/ShareButton'
-import LanguageToggle from '@/components/LanguageToggle'
+import PageHeader from '@/components/PageHeader'
 import { useLanguage } from '@/components/LanguageContext'
 import { useTracker } from '@/components/TrackerContext'
 import type { TrackerStatus, TrackerOutcome } from '@/lib/trackerTypes'
@@ -168,22 +168,11 @@ export default function ResourceDetailClient({ resource }: Props) {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-10 px-5 py-4" style={{ background: 'var(--color-bg)', borderBottom: '2px solid var(--color-border)' }} role="banner">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/resources"
-            className="p-2 -ml-2 rounded-lg"
-            style={{ color: 'var(--color-text-secondary)' }}
-            aria-label={t.backToResources}
-          >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </Link>
-          <LanguageToggle />
-        </div>
-      </header>
+      <PageHeader
+        back="/resources"
+        backLabel={t.backToResources}
+        edition="Hartford, CT"
+      />
 
       <main className="px-5 py-6 fade-in" role="main" id="main-content">
         {/* Categories */}

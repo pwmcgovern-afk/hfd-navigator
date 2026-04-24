@@ -54,7 +54,7 @@ export default async function AdminSuggestionsPage() {
               </div>
 
               {s.resourceId && (
-                <a href={`/admin/resources/${s.resourceId}/edit`} className="text-xs text-teal-700 hover:text-teal-900 mt-2 inline-block">
+                <a href={`/admin/resources/${s.resourceId}/edit`} className="text-xs text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] mt-2 inline-block">
                   View Resource
                 </a>
               )}

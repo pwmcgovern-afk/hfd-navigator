@@ -12,7 +12,9 @@ interface PageHeaderProps {
   backLabel: string
   edition: string
   eyebrow?: string
-  title: string
+  /** Optional. Omit to render just the strip (used by pages with their
+   *  own rich chrome below — search bars, progress bars, filter rows). */
+  title?: string
 }
 
 export default function PageHeader({
@@ -42,10 +44,12 @@ export default function PageHeader({
         <span className="hero__edition">{edition}</span>
         <LanguageToggle />
       </div>
-      <div className="page-header__title-block">
-        {eyebrow && <p className="hero__eyebrow">{eyebrow}</p>}
-        <h1 className="page-header__title">{title}</h1>
-      </div>
+      {title && (
+        <div className="page-header__title-block">
+          {eyebrow && <p className="hero__eyebrow">{eyebrow}</p>}
+          <h1 className="page-header__title">{title}</h1>
+        </div>
+      )}
     </header>
   )
 }
