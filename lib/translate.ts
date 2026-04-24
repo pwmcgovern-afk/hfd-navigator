@@ -33,7 +33,18 @@ export interface TranslateResult {
 
 export async function runTranslation(): Promise<TranslateResult> {
   const resources = await prisma.resource.findMany({
-    where: { OR: [{ nameEs: null }, { nameEs: '' }] },
+    // Catch any resource missing a translated name OR description.
+    // Earlier the filter only checked nameEs, which silently skipped
+    // resources where the name had been translated by a prior run but
+    // descriptionEs / howToApplyEs / tipsEs were never populated.
+    where: {
+      OR: [
+        { nameEs: null },
+        { nameEs: '' },
+        { descriptionEs: null },
+        { descriptionEs: '' },
+      ],
+    },
     select: { id: true, name: true, description: true, howToApply: true, tips: true },
   })
 
